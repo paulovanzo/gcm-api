@@ -29,3 +29,13 @@ def credit(request):
         account.save()
         return HttpResponse(f'Crédito realizado na conta {account.number}. Novo saldo: {account.balance}')
     return render(request, 'account/credit.html')
+
+def debit(request):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        value = Decimal(request.POST.get('value'))
+        account = get_object_or_404(Account, number=number)
+        account.balance -= value
+        account.save()
+        return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
+    return render(request, 'account/debit.html')
