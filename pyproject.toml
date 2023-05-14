@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "gcm"
+version = "0.1.0"
+description = ""
+authors = ["Paulo Vanzolini, Giovanna Karla e José de Sousa"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "^4.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
