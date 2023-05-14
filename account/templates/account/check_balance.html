@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consulta Saldo</title>
+</head>
+<body>
+    <h1>Consulta Saldo</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="number">Número da Conta:</label>
+        <input type="number" name="number" required>
+        <br>
+        <button type="submit">Consultar Saldo</button>
+    </form>
+</body>
+</html>
