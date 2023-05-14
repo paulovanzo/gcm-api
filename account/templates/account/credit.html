@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crédito</title>
+</head>
+<body>
+    <h1>Crédito</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="number">Número da Conta:</label>
+        <input type="number" name="number" required>
+        <br>
+        <label for="value">Valor:</label>
+        <input type="number" name="value" required>
+        <br>
+        <button type="submit">Realizar Crédito</button>
+    </form>
+</body>
+</html>
