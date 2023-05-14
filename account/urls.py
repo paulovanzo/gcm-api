@@ -25,4 +25,5 @@ urlpatterns = [
     path('check-balance/', check_balance, name='check_balance'),
     path('credit/', credit, name='credit'),
     path('debit/', debit, name='debit'),
+    path('transfer/', transfer, name='transfer'),
 ]
