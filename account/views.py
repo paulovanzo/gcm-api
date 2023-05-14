@@ -46,3 +46,17 @@ def debit(request):
         account.save()
         return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
     return render(request, 'account/debit.html')
+
+def transfer(request):
+    if request.method == 'POST':
+        source_number = request.POST.get('source_number')
+        destination_number = request.POST.get('destination_number')
+        value = Decimal(request.POST.get('value'))
+        source_account = get_object_or_404(Account, number=source_number)
+        destination_account = get_object_or_404(Account, number=destination_number)
+        source_account.balance -= value
+        destination_account.balance += value
+        source_account.save()
+        destination_account.save()
+
+    return render(request, 'account/transfer.html')    
