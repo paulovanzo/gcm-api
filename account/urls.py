@@ -17,7 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import view_balance
+from .views import check_balance
 
 urlpatterns = [
-    path('<int:account_id>/balance/', view_balance, name='consultar_saldo'),
+    path('<int:account_id>/balance/', view_balance, name='view_balance'),
+    path('check-balance/', check_balance, name='check_balance'),
 ]
