@@ -12,6 +12,13 @@ def view_balance(request, account_id):
     except Account.DoesNotExist:
         return JsonResponse({'error': 'Conta não encontrada'}, status=404)
 
+def create_account(request):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        account = Account.objects.create(number=number)
+        return HttpResponse(f'Conta criada com sucesso. Número: {account.number}')
+    return render(request, 'account/create_account.html')
+
 def check_balance(request):
     if request.method == 'POST':
         number = request.POST.get('number')
