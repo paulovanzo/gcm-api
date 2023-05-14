@@ -16,6 +16,8 @@ def view_balance(request, account_id):
 def create_account(request):
     if request.method == 'POST':
         number = request.POST.get('number')
+        if Account.objects.filter(number=number).exists():
+            return HttpResponse("Essa conta já está cadastrada.")
         account = Account.objects.create(number=number)
         return HttpResponse(f'Conta criada com sucesso. Número: {account.number}')
     return render(request, 'account/create_account.html')
