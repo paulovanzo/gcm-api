@@ -35,6 +35,10 @@ def credit(request):
         value = Decimal(request.POST.get('value'))
         account = get_object_or_404(Account, number=number)
         account.balance += value
+        
+        if account.account_type == 'bonus':
+            account.points += int(value / 100)
+
         account.save()
         return HttpResponse(f'Crédito realizado na conta {account.number}. Novo saldo: {account.balance}')
     return render(request, 'account/credit.html')
@@ -58,6 +62,10 @@ def transfer(request):
         destination_account = get_object_or_404(Account, number=destination_number)
         source_account.balance -= value
         destination_account.balance += value
+
+        if destination_account.account_type == 'bonus':
+            destination_account.points += int(value / 200)
+
         source_account.save()
         destination_account.save()
 
