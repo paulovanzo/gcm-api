@@ -16,10 +16,14 @@ def view_balance(request, account_id):
 def create_account(request):
     if request.method == 'POST':
         number = request.POST.get('number')
-        if Account.objects.filter(number=number).exists():
-            return HttpResponse("Essa conta já está cadastrada.")
-        account = Account.objects.create(number=number)
-        return HttpResponse(f'Conta criada com sucesso. Número: {account.number}')
+        account_type = request.POST.get('account_type')
+        account = Account.objects.create(number=number, account_type=account_type)
+        
+        if account.account_type == 'bonus':
+            account.points += 10
+            account.save()
+        
+        return HttpResponse(f'Conta criada com sucesso. Número: {account.number}. ' + (f'Pontos: {account.points}' if account.account_type == 'bonus' else ''))
     return render(request, 'account/create_account.html')
 
 def check_balance(request):
@@ -35,6 +39,10 @@ def credit(request):
         value = Decimal(request.POST.get('value'))
         account = get_object_or_404(Account, number=number)
         account.balance += value
+
+        if account.account_type == 'bonus':
+            account.points += int(value / 100)
+
         account.save()
         return HttpResponse(f'Crédito realizado na conta {account.number}. Novo saldo: {account.balance}')
     return render(request, 'account/credit.html')
@@ -58,6 +66,10 @@ def transfer(request):
         destination_account = get_object_or_404(Account, number=destination_number)
         source_account.balance -= value
         destination_account.balance += value
+
+        if destination_account.account_type == 'bonus':
+            destination_account.points += int(value / 200)
+
         source_account.save()
         destination_account.save()
 
