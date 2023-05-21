@@ -61,4 +61,20 @@ def transfer(request):
         source_account.save()
         destination_account.save()
 
-    return render(request, 'account/transfer.html')    
+    return render(request, 'account/transfer.html')
+
+def yield_interest(request):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        interest_rate = Decimal(request.POST.get('interest_rate'))
+
+        account = get_object_or_404(Account, number=number, account_type='poupanca')
+        current_balance = account.balance
+
+        interest_amount = current_balance * (interest_rate / 100)
+        account.balance += interest_amount
+        account.save()
+
+        return HttpResponse(f"Render Juros realizado com sucesso. Saldo atualizado: {account.balance}")
+
+    return render(request, 'account/yield_interest.html')

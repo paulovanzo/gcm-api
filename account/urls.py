@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import view_balance
-from .views import check_balance, check_balance, create_account, credit, debit, transfer
+from .views import view_balance, check_balance, check_balance, create_account, credit, debit, transfer, yield_interest
 
 urlpatterns = [
     path('<int:account_id>/balance/', view_balance, name='view_balance'),
@@ -26,4 +25,5 @@ urlpatterns = [
     path('credit/', credit, name='credit'),
     path('debit/', debit, name='debit'),
     path('transfer/', transfer, name='transfer'),
+    path('yield-interest/', yield_interest, name='yield_interest'),
 ]
