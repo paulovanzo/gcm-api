@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Render Juros</title>
+</head>
+<body>
+    <h1>Render Juros</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="number">Número da Conta:</label>
+        <input type="number" name="number" required>
+        <br>
+        <label for="interest_rate">Valor:</label>
+        <input type="number" name="interest_rate" required>
+        <br>
+        <button type="submit">Render Juro</button>
+    </form>
+</body>
+</html>
