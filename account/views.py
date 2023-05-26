@@ -59,14 +59,25 @@ def debit(request):
         number = request.POST.get('number')
         value = Decimal(request.POST.get('value'))
         account = get_object_or_404(Account, number=number)
+
         if value < 0:
             return JsonResponse({'error': 'Valor inválido'}, status=400)
-        if account.balance >= value:
-            account.balance -= value
-            account.save()
-            return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
+
+        if account.account_type == 'poupanca':
+            if account.balance >= value:
+                account.balance -= value
+                account.save()
+                return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
+            else:
+                return JsonResponse({'error': 'Saldo insuficiente'}, status=400)    
         else:
-            return JsonResponse({'error': 'Saldo insuficiente'}, status=400)    
+            if account.balance >= value - 1000:
+                account.balance -= value
+                account.save()
+                return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
+            else:
+                return JsonResponse({'error': 'Saldo negativo ultrapassa -1000'}, status=400)    
+
     return render(request, 'account/debit.html')
 
 def transfer(request):
