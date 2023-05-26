@@ -38,6 +38,8 @@ def credit(request):
         number = request.POST.get('number')
         value = Decimal(request.POST.get('value'))
         account = get_object_or_404(Account, number=number)
+        if value < 0:
+            return JsonResponse({'error': 'Valor inválido'}, status=400)
         account.balance += value
 
         if account.account_type == 'bonus':
@@ -52,9 +54,14 @@ def debit(request):
         number = request.POST.get('number')
         value = Decimal(request.POST.get('value'))
         account = get_object_or_404(Account, number=number)
-        account.balance -= value
-        account.save()
-        return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
+        if value < 0:
+            return JsonResponse({'error': 'Valor inválido'}, status=400)
+        if account.balance >= value:
+            account.balance -= value
+            account.save()
+            return HttpResponse(f'Débito realizado na conta {account.number}. Novo saldo: {account.balance}')
+        else:
+            return JsonResponse({'error': 'Saldo insuficiente'}, status=400)    
     return render(request, 'account/debit.html')
 
 def transfer(request):
@@ -64,6 +71,11 @@ def transfer(request):
         value = Decimal(request.POST.get('value'))
         source_account = get_object_or_404(Account, number=source_number)
         destination_account = get_object_or_404(Account, number=destination_number)
+
+        if value < 0:
+            return JsonResponse({'error': 'Valor inválido'}, status=400)
+        if source_account.balance < value:
+            return JsonResponse({'error': 'Conta de origem não possui saldo insuficiente'}, status=400)  
         source_account.balance -= value
         destination_account.balance += value
 
