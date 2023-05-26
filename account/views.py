@@ -80,7 +80,7 @@ def transfer(request):
         destination_account.balance += value
 
         if destination_account.account_type == 'bonus':
-            destination_account.points += int(value / 200)
+            destination_account.points += int(value / 150)
 
         source_account.save()
         destination_account.save()
