@@ -17,10 +17,15 @@ def create_account(request):
     if request.method == 'POST':
         number = request.POST.get('number')
         account_type = request.POST.get('account_type')
+        initial_balance = request.POST.get('saldo_inicial')
         account = Account.objects.create(number=number, account_type=account_type)
         
         if account.account_type == 'bonus':
             account.points += 10
+            account.save()
+
+        if account.account_type == 'poupanca':
+            account.balance = initial_balance
             account.save()
         
         return HttpResponse(f'Conta criada com sucesso. Número: {account.number}. ' + (f'Pontos: {account.points}' if account.account_type == 'bonus' else ''))
