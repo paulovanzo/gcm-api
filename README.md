@@ -20,6 +20,9 @@ poetry run python manage.py migrate
 poetry run python manage.py runserver
 ```
 
+### Rotas:
+As rotas de contas desenvolvidas são essas abaixo, cada uma tem um template HTML para criar, verificar, debitar, transferir e render entre contas: ![image](https://github.com/paulovanzo/gcm-api/assets/53716440/8bff8360-052b-4bce-a3c1-86ff44ec3b58)
+
 # Autores
 [Paulo Vanzolini Moura da Silva](https://github.com/paulovanzo)
 [Giovanna Karla de Macedo Félix](https://github.com/giooogk)
