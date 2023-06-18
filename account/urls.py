@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import view_balance, check_balance, check_balance, create_account, credit, debit, transfer, yield_interest
+from .views import view_balance, check_balance, check_account, create_account, credit, debit, transfer, yield_interest
 
 urlpatterns = [
     path('<int:account_id>/balance/', view_balance, name='view_balance'),
     path('create-account/', create_account, name='create_account'),
+    path('check-account/', check_account, name='check_account'),
     path('check-balance/', check_balance, name='check_balance'),
     path('credit/', credit, name='credit'),
     path('debit/', debit, name='debit'),
