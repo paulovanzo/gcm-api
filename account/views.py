@@ -5,6 +5,9 @@ from decimal import Decimal
 
 from .models import Account
 
+def menu(request):
+    return render(request, 'account/menu.html')
+
 def view_balance(request, account_id):
     try:
         account = Account.objects.get(id=account_id)
@@ -12,6 +15,13 @@ def view_balance(request, account_id):
         return JsonResponse({'saldo': balance})
     except Account.DoesNotExist:
         return JsonResponse({'error': 'Conta não encontrada'}, status=404)
+
+def check_account(request):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        account = get_object_or_404(Account, number=number)
+        return JsonResponse({'saldo': account.balance, 'numero': account.number, 'tipo de conta': account.account_type, 'pontos': account.points})
+    return render(request, 'account/check_account.html')
 
 def create_account(request):
     if request.method == 'POST':

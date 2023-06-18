@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu Banco</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'create_account' %}">Criar Conta</a></li>
+                <li><a href="{% url 'check_balance' %}">Consultar Saldo</a></li>
+                <li><a href="{% url 'check_account' %}">Consultar Conta</a></li>
+                <li><a href="{% url 'credit' %}">Creditar</a></li>
+                <li><a href="{% url 'debit' %}">Debitar</a></li>
+                <li><a href="{% url 'transfer' %}">Transferir</a></li>
+                <li><a href="{% url 'yield_interest' %}">Conta Poupança</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
