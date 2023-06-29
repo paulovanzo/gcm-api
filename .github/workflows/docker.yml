@@ -16,6 +16,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Generate Build
+        run: |
+          TAG_NAME="build-$(date "+%s")"
+          git tag $TAG_NAME
+          git push --tags
+
       - name: Install hadolint
         run: |
           curl -sSL -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
