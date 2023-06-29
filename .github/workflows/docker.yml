@@ -22,7 +22,7 @@ jobs:
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z ${LAST_VERSION+x} ]; then LAST_VERSION="0.0"; fi
           which bash
-          declare -a ARR=($(echo $LAST_VERSION| sed -e s/build-//g | tr -s "." " " | xargs -n 1))
+          declare -a ARR=($(echo $LAST_VERSION | sed -e s/build-//g | tr -s "." " " | xargs -n 1))
           echo ${ARR[@]}
           MAJOR=${ARR[0]}
           MINOR=${ARR[1]}
