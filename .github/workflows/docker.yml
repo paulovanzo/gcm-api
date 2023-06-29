@@ -9,27 +9,28 @@ on:
       - develop
 
 jobs:
-  build:
+  docker:
     runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Install hadolint
+        run: |
+          curl -sSL -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
 
-    - name: Install hadolint
-      run: |
-        curl -sSL -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
-        chmod +x /usr/local/bin/hadolint
+      - name: Install dockerfile_lint
+        run: |
+          curl -sSL -o /usr/local/bin/dockerfile_lint https://github.com/replicatedhq/dockerfilelint/releases/latest/download/dockerfilelint-linux-amd64
+          chmod +x /usr/local/bin/dockerfile_lint
 
-    - name: Install dockerfile_lint
-      run: |
-        curl -sSL -o /usr/local/bin/dockerfile_lint https://github.com/replicatedhq/dockerfilelint/releases/latest/download/dockerfilelint-linux-amd64
-        chmod +x /usr/local/bin/dockerfile_lint
+      - name: Check Dockerfile with hadolint
+        run: hadolint Dockerfile
 
-    - name: Check Dockerfile with hadolint
-      run: hadolint Dockerfile
+      - name: Check Dockerfile with dockerfile_lint
+        run: dockerfile_lint Dockerfile
 
-    - name: Check Dockerfile with dockerfile_lint
-      run: dockerfile_lint Dockerfile
-
-    - name: Build the Docker image
-      run: docker build . gcm-api:$(date +%s)
+      - name: Build the Docker image
+        run: docker build . gcm-api:$(date +%s)
