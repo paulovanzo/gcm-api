@@ -25,4 +25,4 @@ jobs:
         run: hadolint Dockerfile --config hadolint.yaml
 
       - name: Build the Docker image
-        run: docker build . gcm-api:$(date +%s)
+        run: docker build . -t gcm-api:$(date +%s)
