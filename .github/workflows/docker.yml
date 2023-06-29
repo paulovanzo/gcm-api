@@ -11,7 +11,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
           chmod +x /usr/local/bin/dockerfile_lint
 
       - name: Check Dockerfile with hadolint
-        run: hadolint Dockerfile
+        run: hadolint Dockerfile --config hadolint.yaml
 
       - name: Check Dockerfile with dockerfile_lint
         run: dockerfile_lint Dockerfile
