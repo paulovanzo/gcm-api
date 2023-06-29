@@ -18,7 +18,7 @@ jobs:
 
       - name: Generate Build
         run: |
-          LAST_TAG=$(git tag -l --sort=-v:refname | head -n 1 | grep build)
+          LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z ${LAST_VERSION+x} ]; then LAST_VERSION="0.0"; fi
           declare -a ARR=($(echo $LAST_VERSION| sed -e s/build-//g | tr -s "." " " | xargs -n 1))
