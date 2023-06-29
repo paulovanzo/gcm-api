@@ -16,7 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          token: $TOKEN_CI
+          token: ${{ secrets.$TOKEN_CI }}
+          fetch-depth: 0
 
       - name: Generate Build
         run: |
