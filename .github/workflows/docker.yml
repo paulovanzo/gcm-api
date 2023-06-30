@@ -13,9 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: bitnami/git:2-debian-11
+    env: 
+      TOKEN_CI: ${{ .secrets.TOKEN_CI }}
     steps:
       - name: Check for dockerenv file
         run: | 
+          git clone https://paulovanzo:$TOKEN_CI@github.com/paulovanzo/gcm-api.git
           LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi
