@@ -12,7 +12,7 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     container:
-      image: debian:10-latest
+      image: debian:10-slim
     steps:
       - name: Check for dockerenv file
         run: | 
@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
+
       - name: Install hadolint
         run: |
           curl -sSL -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
