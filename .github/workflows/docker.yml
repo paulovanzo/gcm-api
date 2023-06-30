@@ -18,7 +18,6 @@ jobs:
 
       - name: Generate Build
         run: |
-          git fetch --all --tags
           LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi
