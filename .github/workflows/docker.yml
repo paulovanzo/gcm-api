@@ -21,14 +21,13 @@ jobs:
           LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi
-          ARR=($(echo $LAST_VERSION | sed s/build-//g | tr -s '.' ' ' | xargs -n 1))
-          MAJOR=${ARR[1]}
-          MINOR=${ARR[2]}
+          IFS=. read MAJOR MINOR <<< $LAST_VERSION
           NEXT_MINOR=$((MINOR + 1))
           NEXT_VERSION="$MAJOR.$NEXT_MINOR"
           TAG_NAME="build-$NEXT_VERSION"
           git tag $TAG_NAME
           git push --tags
+        shell: bash
 
       - name: Install hadolint
         run: |
