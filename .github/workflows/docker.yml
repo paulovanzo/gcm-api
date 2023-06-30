@@ -12,7 +12,7 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     container:
-      image: debian:10-slim
+      image: bitnami/git:2-debian-11
     steps:
       - name: Check for dockerenv file
         run: | 
