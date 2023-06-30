@@ -18,15 +18,15 @@ jobs:
 
       - name: Generate Build
         run: |
-          /bin/bash -c "LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 ) \
-          LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//') \
-          if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi \
-          IFS=. read MAJOR MINOR <<< $LAST_VERSION \
-          NEXT_MINOR=$((MINOR + 1)) \
-          NEXT_VERSION="$MAJOR.$NEXT_MINOR" \
-          TAG_NAME="build-$NEXT_VERSION" \
-          git tag $TAG_NAME \
-          git push --tags"
+          /bin/bash -c 'LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
+          LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
+          if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi
+          IFS=. read MAJOR MINOR <<< $LAST_VERSION
+          NEXT_MINOR=$((MINOR + 1))
+          NEXT_VERSION="$MAJOR.$NEXT_MINOR"
+          TAG_NAME="build-$NEXT_VERSION"
+          git tag $TAG_NAME
+          git push --tags'
         shell: bash
 
       - name: Install hadolint
