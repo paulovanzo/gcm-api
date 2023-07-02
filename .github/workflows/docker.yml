@@ -14,7 +14,7 @@ jobs:
     container:
       image: bitnami/git:2-debian-11
     env:
-      TOKEN_CI: ${{ .secrets.TOKEN_CI }}
+      TOKEN_CI: ${{ secrets.TOKEN_CI }}
     steps:
       - name: Check for dockerenv file
         run: | 
