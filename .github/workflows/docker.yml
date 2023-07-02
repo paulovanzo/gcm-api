@@ -18,13 +18,9 @@ jobs:
     steps:
       - name: 'Git Clone'
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.TOKEN_CI }}
-          repository: paulovanzo/gcm-api
 
       - name: Tag Git
         run: | 
-          git clone "https://paulovanzo:${TOKEN_CI}@github.com/paulovanzo/gcm-api.git"
           LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi
