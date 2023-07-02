@@ -16,13 +16,10 @@ jobs:
     env:
       TOKEN_CI: ${{ secrets.TOKEN_CI }}
     steps:
-      - name: 'Git Clone'
-        uses: actions/checkout@v3
-
       - name: Tag Git
         shell: bash
         run: | 
-          git config --global --add safe.directory /__w/gcm-api/gcm-api
+          git clone https://${TOKEN_CI}github.com/paulovanzo/gcm-api.git
           LAST_TAG=$(git tag -l --sort=-v:refname | grep build | head -n 1 )
           LAST_VERSION=$(echo $LAST_TAG | sed 's/build-//')
           if [ -z $LAST_VERSION ]; then LAST_VERSION="0.0"; fi
@@ -31,7 +28,7 @@ jobs:
           NEXT_VERSION="$MAJOR.$NEXT_MINOR"
           TAG_NAME="build-$NEXT_VERSION"
           git tag $TAG_NAME
-          git push --tags)
+          git push --tags
   
   docker:
     runs-on: ubuntu-latest
