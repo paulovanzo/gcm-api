@@ -1,0 +1,37 @@
+name: Snyk Workflow
+
+on:
+  push:
+    tags:
+      - 'rc-*'
+    branches:
+      - develop
+      - release
+  pull_request:
+    branches:
+      -  develop
+      - release
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    container:
+      image: snyk/snyk:python-3.8
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+      - name: Checkout repository
+        uses: actions/checkout@v3      
+
+      - name: Install project dependencies
+        run: /github/home/.local/bin/poetry install --no-root
+
+      - name: Snyk Test
+        run: |
+          snyk auth ${SNYK_TOKEN}
+          snyk test --package-manager=poetry
