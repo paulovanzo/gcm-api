@@ -23,6 +23,9 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
+      - name: Checkout repository
+        uses: actions/checkout@v3      
+
       - name: Install project dependencies
         run: /github/home/.local/bin/poetry install --no-root
 
