@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: snyk/snyk:python-3.8
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Install Poetry
         run: |
@@ -31,4 +33,5 @@ jobs:
 
       - name: Snyk Test
         run: |
+          snyk auth ${SNYK_TOKEN}
           snyk test --package-manager=poetry
