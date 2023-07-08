@@ -2,14 +2,19 @@ name: Testes Unitários Workflow
 
 on:
   push:
+    tags:
+      - 'rc-*'
     branches:
       - develop
+      - release
+
   pull_request:
     branches:
       - develop
+      - release
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     
     steps: 
