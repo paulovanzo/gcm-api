@@ -1,0 +1,30 @@
+name: Build Workflow
+
+on:
+  push:
+    branches:
+      - develop
+      - release
+  pull_request:
+    branches:
+      - develop
+      - release
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install hadolint
+        run: |
+          curl -sSL -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
+
+      - name: Check Dockerfile with hadolint
+        run: hadolint Dockerfile --config hadolint.yaml
+
+      - name: Build the Docker image
+        run: docker build --build-arg DJANGO_SECRET_KEY=$SECRET_KEY . -t gcm-api:$(date +%s) 

@@ -2,8 +2,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from decimal import Decimal
-
+from .serializers import AccountSerializer
 from .models import Account
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 def menu(request):
     return render(request, 'account/menu.html')
@@ -132,3 +134,75 @@ def yield_interest(request):
         return HttpResponse(f"Render Juros realizado com sucesso. Saldo atualizado: {account.balance}")
 
     return render(request, 'account/yield_interest.html')
+
+class AccountList(generics.ListCreateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+class AccountDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+
+class CreditView(generics.UpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        value = request.data.get('value')
+        try:
+            instance.credit(value)
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DebitView(generics.UpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        value = request.data.get('value')
+        try:
+            instance.debit(value)
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TransferView(generics.UpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        destination_account_id = request.data.get('destination_account')
+        value = request.data.get('value')
+        try:
+            destination_account = Account.objects.get(pk=destination_account_id)
+            instance.transfer(destination_account, value)
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except Account.DoesNotExist:
+            return Response({'error': 'Conta de destino não encontrada'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class YieldInterestView(generics.UpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        interest_rate = request.data.get('interest_rate')
+        try:
+            instance.yield_interest(interest_rate)
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)    

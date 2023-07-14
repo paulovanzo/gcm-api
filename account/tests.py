@@ -1,116 +1,104 @@
 from django.test import TestCase
-from decimal import Decimal
 from .models import Account
 
-class BankOperationsTestCase(TestCase):
-    def setUp(self):
-        self.normal_account = Account.objects.create(number=42345, balance=100.00, account_type='normal', points=0)
-        self.bonus_account = Account.objects.create(number=57890, balance=200.00, account_type='bonus', points=0)
-        self.poupanca_account = Account.objects.create(number=64680, balance=500.00, account_type='poupanca', points=0)
-
-    def test_cadastrar_conta_normal(self):
-        account = Account.objects.create(number=13579, account_type='normal')
+class AccountTestCase(TestCase):
+    def test_create_account_normal(self):
+        account = Account.create_account(number=1, account_type='normal')
         self.assertEqual(account.account_type, 'normal')
-        self.assertEqual(account.balance, Decimal('0.00'))
+        self.assertEqual(account.balance, 0)
+        self.assertEqual(account.points, 0)
 
-    def test_cadastrar_conta_bonus(self):
-        account = Account.objects.create(number=24680, account_type='bonus')
+    def test_create_account_bonus(self):
+        account = Account.create_account(number=2, account_type='bonus')
         self.assertEqual(account.account_type, 'bonus')
-        self.assertEqual(account.balance, Decimal('0.00'))
+        self.assertEqual(account.balance, 0)
         self.assertEqual(account.points, 10)
 
-    def test_cadastrar_conta_poupanca(self):
-        account = Account.objects.create(number=35791, account_type='poupanca')
+    def test_create_account_poupanca(self):
+        account = Account.create_account(number=3, account_type='poupanca', initial_balance=100)
         self.assertEqual(account.account_type, 'poupanca')
-        self.assertEqual(account.balance, Decimal('0.00'))
+        self.assertEqual(account.balance, 100)
+        self.assertEqual(account.points, 0)
 
-    def test_consultar_conta_normal(self):
-        account = Account.objects.get(number=self.normal_account.number)
-        self.assertEqual(account.account_type, 'normal')
+    def test_view_balance(self):
+        account = Account.create_account(number=4, account_type='normal')
+        balance = account.view_balance()
+        self.assertEqual(balance, account.balance)
 
-    def test_consultar_conta_bonus(self):
-        account = Account.objects.get(number=self.bonus_account.number)
-        self.assertEqual(account.account_type, 'bonus')
+    def test_credit(self):
+        account = Account.create_account(number=5, account_type='normal')
+        account.credit(100)
+        self.assertEqual(account.balance, 100)
 
-    def test_consultar_conta_poupanca(self):
-        account = Account.objects.get(number=self.poupanca_account.number)
-        self.assertEqual(account.account_type, 'poupanca')
+    def test_credit_negative_value(self):
+        account = Account.create_account(number=6, account_type='normal')
+        with self.assertRaises(ValueError):
+            account.credit(-100)
 
-    def test_consultar_saldo(self):
-        balance = self.normal_account.balance
-        self.assertEqual(balance, Decimal('100.00'))
+    def test_credit_bonus_account(self):
+        account = Account.create_account(number=7, account_type='bonus')
+        account.credit(100)
+        self.assertEqual(account.balance, 100)
+        self.assertEqual(account.points, 11)
 
-    def test_credito_normal(self):
-        value = Decimal('50.00')
-        self.normal_account.balance += value
-        self.normal_account.save()
-        self.assertEqual(self.normal_account.balance, Decimal('150.00'))
+    def test_debit(self):
+        account = Account.create_account(number=8, account_type='poupanca', initial_balance=100)
+        account.debit(50)
+        self.assertEqual(account.balance, 50)
 
-    def test_credito_valor_negativo(self):
-        value = Decimal('-50.00')
-        self.assertRaises(ValueError, self.normal_account.balance.__add__, value)
+    def test_debit_negative_value(self):
+        account = Account.create_account(number=9, account_type='normal', initial_balance=100)
+        with self.assertRaises(ValueError):
+            account.debit(-50)
 
-    def test_credito_bonus(self):
-        value = Decimal('100.00')
-        self.bonus_account.balance += value
-        self.bonus_account.points += int(value / 100)
-        self.bonus_account.save()
-        self.assertEqual(self.bonus_account.balance, Decimal('300.00'))
-        self.assertEqual(self.bonus_account.points, 2)
+    def test_debit_insufficient_balance(self):
+        account = Account.create_account(number=10, account_type='poupanca', initial_balance=100)
+        with self.assertRaises(ValueError):
+            account.debit(150)
 
-    def test_debito_normal(self):
-        value = Decimal('50.00')
-        self.normal_account.balance -= value
-        self.normal_account.save()
-        self.assertEqual(self.normal_account.balance, Decimal('50.00'))
+    def test_debit_poupanca_limit(self):
+        account = Account.create_account(number=11, account_type='poupanca', initial_balance=100)
+        account.debit(50)
+        self.assertEqual(account.balance, 50)
 
-    def test_debito_valor_negativo(self):
-        value = Decimal('-50.00')
-        self.assertRaises(ValueError, self.normal_account.balance.__sub__, value)
+        with self.assertRaises(ValueError):
+            account.debit(51)
 
-    def test_debito_saldo_insuficiente_normal(self):
-        value = Decimal('200.00')
-        self.assertRaises(ValueError, self.normal_account.balance.__sub__, value)
+    def test_transfer(self):
+        source_account = Account.create_account(number=12, account_type='poupanca', initial_balance=100)
+        destination_account = Account.create_account(number=13, account_type='poupanca')
+        source_account.transfer(destination_account, 50)
 
-    def test_debito_saldo_insuficiente_poupanca(self):
-        value = Decimal('600.00')
-        self.assertRaises(ValueError, self.poupanca_account.balance.__sub__, value)
+        self.assertEqual(source_account.balance, 50)
+        self.assertEqual(destination_account.balance, 50)
 
-    def test_transferencia_valor_negativo(self):
-        value = Decimal('-50.00')
-        self.assertRaises(ValueError, self.normal_account.balance.__sub__, value)
+    def test_transfer_negative_value(self):
+        source_account = Account.create_account(number=14, account_type='normal', initial_balance=100)
+        destination_account = Account.create_account(number=15, account_type='normal')
+        with self.assertRaises(ValueError):
+            source_account.transfer(destination_account, -50)
 
-    def test_transferencia_saldo_insuficiente(self):
-        source_balance = self.normal_account.balance
-        destination_balance = self.bonus_account.balance
-        value = Decimal('200.00')
-        self.assertRaises(ValueError, self.normal_account.balance.__sub__, value)
-        self.assertEqual(self.normal_account.balance, source_balance)
-        self.assertEqual(self.bonus_account.balance, destination_balance)
+    def test_transfer_insufficient_balance(self):
+        source_account = Account.create_account(number=16, account_type='normal', initial_balance=100)
+        destination_account = Account.create_account(number=17, account_type='normal')
+        with self.assertRaises(ValueError):
+            source_account.transfer(destination_account, 150)
 
-    def test_transferencia_bonus(self):
-        source_balance = self.bonus_account.balance
-        destination_balance = self.normal_account.balance
-        value = Decimal('100.00')
+    def test_transfer_bonus_account(self):
+        source_account = Account.create_account(number=18, account_type='poupanca', initial_balance=300)
+        destination_account = Account.create_account(number=19, account_type='bonus')
+        source_account.transfer(destination_account, 200)
 
-        self.bonus_account.balance -= value
-        self.normal_account.balance += value
-        self.normal_account.points += int(value / 200)
-        self.bonus_account.save()
-        self.normal_account.save()
+        self.assertEqual(source_account.balance, 100)
+        self.assertEqual(destination_account.balance, 200)
+        self.assertEqual(destination_account.points, 11)
 
-        self.assertEqual(self.bonus_account.balance, source_balance - value)
-        self.assertEqual(self.normal_account.balance, destination_balance + value)
-        self.assertEqual(self.normal_account.points, 0)
+    def test_yield_interest_poupanca(self):
+        account = Account.create_account(number=20, account_type='poupanca', initial_balance=100)
+        account.yield_interest(2)
+        self.assertEqual(account.balance, 102)
 
-    def test_render_juros_poupanca(self):
-        interest_rate = Decimal('0.05')
-        current_balance = self.poupanca_account.balance
-
-        interest_amount = current_balance * (interest_rate / 100)
-        self.poupanca_account.balance += interest_amount
-        self.poupanca_account.save()
-
-        self.assertEqual(self.poupanca_account.balance, current_balance + interest_amount)
-
-       
+    def test_yield_interest_non_poupanca(self):
+        account = Account.create_account(number=21, account_type='normal', initial_balance=100)
+        with self.assertRaises(ValueError):
+            account.yield_interest(2)
