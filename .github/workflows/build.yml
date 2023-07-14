@@ -37,16 +37,11 @@ jobs:
           username: zedsousa
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           push: true
           file: Dockerfile
           target: app
-          tags: zedsousa/gcm-api:${{ steps.extract_branch.outputs.branch }}
+          tags: zedsousa/gcm-api:${{ github.ref_name }}
           build-args: DJANGO_SECRET_KEY=${{ secrets.SECRET_KEY }}
