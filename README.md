@@ -20,6 +20,14 @@ poetry run python manage.py migrate
 poetry run python manage.py runserver
 ```
 
+# Para rodar os testes unitários
+
+Após ter o projeto rodando na sua maquina basta utilizar o comando:
+
+```
+poetry run python manage.py test
+```
+
 ### Rotas:
 As rotas de contas desenvolvidas são essas abaixo, cada uma tem um template HTML para criar, verificar, debitar, transferir e render entre contas:
 

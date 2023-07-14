@@ -16,15 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import view_balance, check_balance, check_account, create_account, credit, debit, transfer, yield_interest
+from . import views
+
+app_name = 'accounts'
 
 urlpatterns = [
-    path('<int:account_id>/balance/', view_balance, name='view_balance'),
-    path('create-account/', create_account, name='create_account'),
-    path('check-account/', check_account, name='check_account'),
-    path('check-balance/', check_balance, name='check_balance'),
-    path('credit/', credit, name='credit'),
-    path('debit/', debit, name='debit'),
-    path('transfer/', transfer, name='transfer'),
-    path('yield-interest/', yield_interest, name='yield_interest'),
+    path('<int:account_id>/balance/', views.view_balance, name='view_balance'),
+    path('create-account/', views.create_account, name='create_account'),
+    path('check-account/', views.check_account, name='check_account'),
+    path('check-balance/', views.check_balance, name='check_balance'),
+    path('credit/', views.credit, name='credit'),
+    path('debit/', views.debit, name='debit'),
+    path('transfer/', views.transfer, name='transfer'),
+    path('yield-interest/', views.yield_interest, name='yield_interest'),
+    path('accounts/', views.AccountList.as_view(), name='account-list'),
+    path('accounts/<int:pk>/', views.AccountDetail.as_view(), name='account-detail'),
+    path('accounts/<int:pk>/credit/', views.CreditView.as_view(), name='account-credit'),
+    path('accounts/<int:pk>/debit/', views.DebitView.as_view(), name='account-debit'),
+    path('accounts/<int:pk>/transfer/', views.TransferView.as_view(), name='account-transfer'),
+    path('accounts/<int:pk>/yield_interest/', views.YieldInterestView.as_view(), name='account-yield-interest'),
+
 ]

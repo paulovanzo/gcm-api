@@ -1,0 +1,24 @@
+name: Artifact Workflow
+
+on:
+  push:
+    tags:
+      - 'rel-*'
+      - 'rc-*'
+
+jobs:
+  artifact:
+    runs-on: ubuntu-latest
+    container:
+      image: bitnami/git:2-debian-11
+    steps:
+      - name: Generate Tar
+        shell: bash
+        run: |
+          tar -cvf account.tar.gz ./
+
+      - name: Upload code
+        uses: actions/upload-artifact@v3
+        with:
+          name: Tar Code
+          path: account.tar.gz
