@@ -7,10 +7,6 @@ on:
     branches:
       - develop
       - release
-  pull_request:
-    branches:
-      - develop
-      - release
 
 jobs:
   docker:
