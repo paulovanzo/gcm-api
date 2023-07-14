@@ -27,4 +27,6 @@ RUN groupadd -r gcm \
 
 USER gcm
 
+EXPOSE 8080
+
 CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn gcm.wsgi:application -b 127.0.0.1:8080"]
