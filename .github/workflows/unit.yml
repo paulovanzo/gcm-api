@@ -3,6 +3,7 @@ name: Testes Unitários Workflow
 on:
   push:
     tags:
+      - 'rel-*'
       - 'rc-*'
     branches:
       - develop
