@@ -3,6 +3,7 @@ name: Artifact Workflow
 on:
   push:
     tags:
+      - 'rel-*'
       - 'rc-*'
 
 jobs:

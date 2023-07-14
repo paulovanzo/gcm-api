@@ -3,6 +3,7 @@ name: Snyk Workflow
 on:
   push:
     tags:
+      - 'rel-'
       - 'rc-*'
     branches:
       - develop
