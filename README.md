@@ -4,7 +4,7 @@ Esse projeto tem em vista servir de base para a disciplina de Gerência e Config
 
 O projeto é baseado em python Django e consiste em um sistema bancário simples
 
-# Para rodar o projeto
+# Para rodar o projeto  
 
 É necessário a versão 3.8 do Python ou maior e a do Django 4.2.
 Para facilitar foi disponibilizado um pyproject.toml e um poetry.lock
